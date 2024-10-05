@@ -1,10 +1,7 @@
-/* crt buffer*/
-
 #pragma header
-#extension GL_EXT_gpu_shader4 : enable
-vec2 uv = openfl_TextureCoordv.xy;
-vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
-vec2 iResolution = openfl_TextureSize;
+vec2 uv;
+vec2 fragCoord;
+vec2 iResolution;
 uniform float iTime;
 #define iChannel0 bitmap
 #define texture flixel_texture2D
@@ -25,7 +22,7 @@ precision highp sampler2D;
 #define REZ (iResolution.xy)
 
 const bool shadowMask = true;
-const int subScale = 6;
+const float subScale = 6.0;
 const float gamma = 1.25;
 const float bright = 7.5;
 const float blink_force = 0.0125;
@@ -122,7 +119,7 @@ vec3 fillter ( const in vec3 color, const in vec2 uv )
 {
     vec3 col = color;
     
-    col += table[int( uv.x ) % 4][int( uv.y ) % 4] * 0.005;  
+    col += table[int( uv.x )][int( uv.y )] * 0.005;  
 
     return floor(col * factor) / factor; 
 }
@@ -239,15 +236,18 @@ vec3 calcVig ( const in vec3 color, const in vec2 uv )
 
 void mainImage()
 {
-    vec2 uv = fragCoord.xy / REZ;
+    uv = openfl_TextureCoordv.xy;
+    iResolution = openfl_TextureSize;
+    fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+    vec2 uv = openfl_TextureCoordv.xy;
 	vec2 fuv = calcLensUV( uv );
 
 	if (active)
 	{
 		if (!hasOut( fuv ))
 		{
-			float m = 5 / iResolution.x;
-			sub = max(vec2(subScale + int((m * 15.0) - mod(m * 15.0, 3.0))), REZ / openfl_TextureSize.xy);
+			float m = 5.0 / iResolution.x;
+			sub = max(vec2(subScale + float((m * 15.0) - mod(m * 15.0, 3.0))), REZ / openfl_TextureSize.xy);
 		
 			vec3 color = calcChromaticAberration( fuv );
 

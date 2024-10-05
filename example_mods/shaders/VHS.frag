@@ -1,11 +1,7 @@
-// Automatically converted with ShadertoyToFlixel.js
-
-//help from theleername!! :D
-
 #pragma header
-vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
-vec2 iResolution = openfl_TextureSize;
-vec2 uv = openfl_TextureCoordv.xy;
+vec2 fragCoord;
+vec2 iResolution;
+vec2 uv;
 uniform float iTime;
 
 #define time iTime
@@ -49,6 +45,9 @@ float noise( vec2 _v ){
 }
 
 void main() {
+  iResolution = openfl_TextureSize;
+  uv = openfl_TextureCoordv.xy;
+  fragCoord = openfl_TextureCoordv*openfl_TextureSize;
   if (active)
   {
   vec2 uvn = uv;
@@ -95,4 +94,3 @@ void main() {
 	gl_FragColor = vec4( tex2D(bitmap, uv), flixel_texture2D(bitmap, uv).a );
   }
 }
-

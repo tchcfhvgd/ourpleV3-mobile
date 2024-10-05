@@ -1,17 +1,14 @@
-// https://www.shadertoy.com/view/XtyXzW
-
 #pragma header
 
-vec2 uv = openfl_TextureCoordv.xy;
-uniform float time = 0.8;
-uniform float prob = 0.7;
-uniform float vignetteIntensity = 5;
+const float time = 0.8;
+const float prob = 0.7;
+const float vignetteIntensity = 5.0;
 
-uniform float size = .5;
-uniform float grid = 6;
-uniform float blocks = 0.8;
+const float size = .5;
+const float grid = 6.0;
+const float blocks = 0.8;
 
-uniform float glitchScale = 0.4;
+const float glitchScale = 0.4;
 
 vec3 tex2D(sampler2D _tex,vec2 _p)
 {
@@ -34,7 +31,7 @@ float rand(vec2 co){
 }
 
 vec2 glitchCoord(vec2 p, vec2 gridSize) {
-	vec2 coord = floor(p / gridSize) * gridSize;;
+	vec2 coord = floor(p / gridSize) * gridSize;
     coord += (gridSize / 2.);
     return coord;
 }
@@ -43,7 +40,7 @@ struct GlitchSeed {
     vec2 seed;
     float prob;
 };
-    
+
 float fBox2d(vec2 p, vec2 b) {
   vec2 d = abs(p) - b;
   return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
@@ -65,35 +62,31 @@ float shouldApply(GlitchSeed seed) {
     );
 }
 
-
 // --------------------------------------------------------
 // Glitch effects
 // --------------------------------------------------------
 
 // Swap
-
 vec4 swapCoords(vec2 seed, vec2 groupSize, vec2 subGrid, vec2 blockSize) {
-    vec2 rand2 = vec2(rand(seed), rand(seed+.1));
-    vec2 range = subGrid - (blockSize - 1.);
-    vec2 coord = floor(rand2 * range) / subGrid / 2;
-    vec2 bottomLeft = coord * groupSize;
-    vec2 realBlockSize = (groupSize / subGrid) * blockSize;
+    vec2 rand2 = vec2(rand(seed), rand(seed + vec2(0.1, 0)));
+    vec2 range = subGrid - (blockSize - 1.0);
+    vec2 coord = floor(rand2 * range) / subGrid / 2.0;
+    vec2 bottomLeft = coord * groupSize - groupSize / 2.0;
+    vec2 realBlockSize = blockSize * (groupSize / subGrid);
     vec2 topRight = bottomLeft + realBlockSize;
-    topRight -= groupSize / 2.;
-    bottomLeft -= groupSize / 2.;
     return vec4(bottomLeft, topRight);
 }
 
 float isInBlock(vec2 pos, vec4 block) {
     vec2 a = sign(pos - block.xy);
     vec2 b = sign(block.zw - pos);
-    return min(sign(a.x + a.y + b.x + b.y - 3.), 0.);
+    float maxA = max(a.x, a.y);
+    float maxB = max(b.x, b.y);
+    return min(maxA, maxB) - 1.0;
 }
 
 vec2 moveDiff(vec2 pos, vec4 swapA, vec4 swapB) {
     vec2 diff = swapB.xy - swapA.xy;
-	swapA.a = 1;
-	swapB.a = 1;
     return diff * isInBlock(pos, swapA);
 }
 
@@ -107,8 +100,6 @@ void swapBlocks(inout vec2 xy, vec2 groupSize, vec2 subGrid, vec2 blockSize, vec
     
     vec4 swapA = swapCoords(seedA, groupSize, subGrid, blockSize);
     vec4 swapB = swapCoords(seedB, groupSize, subGrid, blockSize);
-	swapA.a = 1;
-	swapB.a = 1;
     
     vec2 newPos = pos;
     newPos += moveDiff(pos, swapA, swapB) * apply;
@@ -117,10 +108,6 @@ void swapBlocks(inout vec2 xy, vec2 groupSize, vec2 subGrid, vec2 blockSize, vec
     
     xy = pos + groupOffset;
 }
-
-
-// Static
-
 
 // --------------------------------------------------------
 // Glitch compositions
@@ -139,24 +126,24 @@ void glitchSwap(inout vec2 p) {
     float apply;
     
     groupSize = vec2(.6 + size) * scale;
-    subGrid = vec2(2 + grid);
-    blockSize = vec2(1 + blocks);
+    subGrid = vec2(2.0 + grid);
+    blockSize = vec2(1.0 + blocks);
 
     seed = glitchSeed(glitchCoord(p, groupSize), speed);
     apply = shouldApply(seed);
     swapBlocks(p, groupSize, subGrid, blockSize, seed.seed, apply);
     
     groupSize = vec2(.8 + size) * scale;
-    subGrid = vec2(6 + grid);
-    blockSize = vec2(2 + blocks);
+    subGrid = vec2(6.0 + grid);
+    blockSize = vec2(2.0 + blocks);
     
     seed = glitchSeed(glitchCoord(p, groupSize), speed);
     apply = shouldApply(seed);
     swapBlocks(p, groupSize, subGrid, blockSize, seed.seed, apply);
 
     groupSize = vec2(.2 + size) * scale;
-    subGrid = vec2(6 + grid);
-    blockSize = vec2(6 + blocks);
+    subGrid = vec2(6.0 + grid);
+    blockSize = vec2(6.0 + blocks);
     
     seed = glitchSeed(glitchCoord(p, groupSize), speed);
     float apply2 = shouldApply(seed);
@@ -167,8 +154,8 @@ void glitchSwap(inout vec2 p) {
     swapBlocks(p, groupSize, subGrid, blockSize, (seed.seed + 5.), apply * apply2);
     
     groupSize = vec2(1.2, .2) * scale;
-    subGrid = vec2(9,2);
-    blockSize = vec2(3,1);
+    subGrid = vec2(9.0,2.0);
+    blockSize = vec2(3.0,1.0);
     
     seed = glitchSeed(glitchCoord(p, groupSize), speed);
     apply = shouldApply(seed);
@@ -176,8 +163,8 @@ void glitchSwap(inout vec2 p) {
 }
 
 void main() {
-    // time = mod(time, 1.);
-    float alpha = 1;
+    vec2 uv = openfl_TextureCoordv.xy;
+    float alpha = 1.0;
     vec2 p = openfl_TextureCoordv.xy;
     vec3 basecolor = texture2D(bitmap, openfl_TextureCoordv).rgb;
     
@@ -186,10 +173,9 @@ void main() {
     vec3 color = texture2D(bitmap, p).rgb;
 
     float amount = (0.5 * sin(time * PI) + vignetteIntensity);
-    float vignette = 0;
-	if (color == vec3(0, 0, 0))
-	{
-		discard;
-	}
-	gl_FragColor = vec4(mix(color.rgb, basecolor.rgb, vignette), flixel_texture2D(bitmap, uv).a);
+    float vignette = 0.0;
+    if (color == vec3(0.0, 0.0, 0.0)) {
+        discard;
+    }
+    gl_FragColor = vec4(mix(color.rgb, basecolor.rgb, vignette), flixel_texture2D(bitmap, uv).a);
 }
