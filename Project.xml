@@ -87,7 +87,6 @@
 
 	<assets path="assets/ourplesecrets"        library="ourplesecrets" embed='true'/>
 	<assets path="assets/shared/images/characters/secret"    embed='true'/>
-	<assets path='shitposts' embed='false'/>
 
 	
 	<section if="MODS_ALLOWED">
