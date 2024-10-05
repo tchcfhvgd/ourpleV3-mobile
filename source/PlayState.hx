@@ -4,7 +4,6 @@ import Stage.BloomShader;
 import SubtitleHandler.SubtitleData;
 import Conductor.SongTimer;
 import Stage.FollowedGlitch;
-import shaders.NTSCShader;
 import flixel.addons.display.FlxBackdrop;
 import PauseSubState.PauseChars;
 import flixel.system.FlxAssets.FlxShader;
@@ -4181,13 +4180,10 @@ class PlayState extends MusicBeatState
 					dismantleScanlines.cameras = [camHUD];
 				}
 
-
-				var ntscShader = new shaders.NTSCShader();
 				var coolwarp = CoolUtil.initializeShader('ChromCRT');
 				coolwarp.setFloat('iTime',0.12);
 				stage.updateiTime.push(coolwarp);
 				addShader(coolwarp,'asd');
-				addShader(ntscShader);
 				defaultHudZoom = 0.9;
 				camHUD.zoom = 0.9;
 			case 'setNotePosition':
