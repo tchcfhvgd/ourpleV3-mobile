@@ -1,7 +1,5 @@
 #pragma header
 
-vec2 fragCoord=openfl_TextureCoordv*openfl_TextureSize; //todo kill fragcoord
-
 uniform float glitchAmount;
 uniform float iTime;
 
@@ -22,6 +20,7 @@ float dist(vec2 a,vec2 b)
 
 void main()
 {
+    vec2 fragCoord=openfl_TextureCoordv*openfl_TextureSize; //todo kill fragcoord
     vec2 uv=fragCoord.xy/openfl_TextureSize.xy;
     float amount=pow(glitchAmount,2.);
     vec2 pixel=1./openfl_TextureSize.xy;

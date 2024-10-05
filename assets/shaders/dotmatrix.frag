@@ -1,7 +1,6 @@
-	#pragma header
+#pragma header
 	//https://www.shadertoy.com/view/XldBRM
 	
-	vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
 	uniform float iTime;
 
 	#define DOT 0.4 //for larger spacing + smaller dots, decrease value below 0.4
@@ -16,6 +15,7 @@
 
 	void main()
 	{
+		vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
 		//indexing shenanigans needed for color averaging
 		float indexX = fragCoord.x - .5;
 		float indexY = fragCoord.y - .5;
@@ -23,9 +23,9 @@
 		float cellY = floor(indexY / pixSizeY)* pixSizeY;
 		
 		//handle mouse input, slide between greyscale and binary pixels
-		float binary = 0.0f;
+		float binary = 0.0;
 		// if(indexX < iMouse.x)
-		// 	binary = 1.0f;
+		// 	binary = 1.0;
 
 		float texAvg = 0.0;
 		//fast version of above nested loop
@@ -34,7 +34,7 @@
 		texAvg = 0.3*currTexVal.r + 0.59*currTexVal.g + 0.11*currTexVal.b;
 		
 		//switch pixels on/off
-		texAvg = (1.0f-binary)*texAvg + binary*step(pixThreshold, texAvg);
+		texAvg = (1.0-binary)*texAvg + binary*step(pixThreshold, texAvg);
 		
 		//colorize in dmd color
 		vec4 col = currTexVal;
@@ -54,5 +54,3 @@
 		// Output to screen
 		gl_FragColor = col;   
 	}
-
-
