@@ -184,9 +184,9 @@ class MusicBeatState extends FlxUIState
 
 
 		if(nextState == FlxG.state)
-			MadnessTransition.finishCallback = function() FlxG.resetState();
+			CustomFadeTransition.finishCallback = function() FlxG.resetState();
 		else
-			MadnessTransition.finishCallback = function() FlxG.switchState(nextState);
+			CustomFadeTransition.finishCallback = function() FlxG.switchState(nextState);
 	}
 
 	public static function getState():MusicBeatState {
