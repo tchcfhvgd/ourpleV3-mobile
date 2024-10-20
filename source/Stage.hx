@@ -1415,10 +1415,8 @@ class TrappedShader extends FlxShader
 	
 
 	@:glFragmentSource('
-	#pragma header
+    #pragma header
 
-	vec2 fragCoord=openfl_TextureCoordv*openfl_TextureSize;
-	
 	uniform float iTime;
 	
 	uniform float speed;
@@ -1429,6 +1427,7 @@ class TrappedShader extends FlxShader
 	
 	void main()
 	{
+		vec2 fragCoord=openfl_TextureCoordv*openfl_TextureSize;
 		vec4 sum = vec4(0);
 		vec2 texcoord=fragCoord.xy/openfl_TextureSize.xy;
 		
@@ -1542,9 +1541,7 @@ class Glitch2 extends FlxShader //me make into hardcode kay?
 	}
 	
 	@:glFragmentSource('
-	#pragma header
-
-	vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+    #pragma header
     uniform float iTime;
 	uniform float GLITCH;
 
@@ -1597,7 +1594,7 @@ class Glitch2 extends FlxShader //me make into hardcode kay?
 	
 	void main()
 	{
-		vec2 uv = fragCoord.xy / openfl_TextureSize.xy;
+		vec2 uv = openfl_TextureCoordv.xy;
 		uv.y = uv.y;
 		
 		float time = mod(iTime*100.0, 32.0)/110.0;
@@ -1680,8 +1677,7 @@ class GlitchShader2 extends FlxShader
 
 	@:glFragmentSource('
     #pragma header
-    vec2 uv = openfl_TextureCoordv.xy;
-    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+   
     uniform float iTime;
 
     vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
@@ -1798,7 +1794,8 @@ class GlitchShader2 extends FlxShader
     
     void main()
     {
-        vec2 uv = fragCoord.xy / openfl_TextureSize.xy;
+        vec2 uv = openfl_TextureCoordv.xy;
+    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
         //float n = 1.5;
         float n = noise(fragCoord.y + iTime);
         float sdist = snoise(vec2(0.0, uv.y * 8.0 + iTime * 2.0));
@@ -1857,8 +1854,7 @@ class Fishlens extends FlxShader //me make into hardcode kay?
 	}
 	
 	@:glFragmentSource('
-	#pragma header
-	vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+    #pragma header
 
 	uniform float power;
 	uniform float chromo;
@@ -1866,7 +1862,8 @@ class Fishlens extends FlxShader //me make into hardcode kay?
 	void main()
 	{
 		// uv (0 to 1)
-		vec2 uv = fragCoord/openfl_TextureSize.xy;
+		vec2 uv = openfl_TextureCoordv.xy;
+    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
 		
 		// uv (-1 to 1, 0 - center)
 		uv.x = 2. * uv.x - 1.;
@@ -2239,13 +2236,14 @@ class BloomShader extends FlxShader
 	}
 	
 	@:glFragmentSource('
-        #pragma header
-		vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+    #pragma header
+		
 		const float blurSize = 1.0/512.0;
 		const float intensity = 0.35;
 		uniform float strength;
 		void main()
 		{
+		   vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
 		   vec4 sum = vec4(0);
 		   vec2 texcoord = fragCoord.xy/openfl_TextureSize.xy;
 		
@@ -2343,8 +2341,6 @@ class GlitchShaderA extends FlxShader //https://www.shadertoy.com/view/MscGzl
 	@:glFragmentSource('
     #pragma header
 
-    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
-
     uniform float glitchAmount;
     uniform float iTime;
 
@@ -2365,7 +2361,8 @@ class GlitchShaderA extends FlxShader //https://www.shadertoy.com/view/MscGzl
 
     void main()
     {   
-	    vec2 uv = fragCoord.xy / openfl_TextureSize.xy;
+	    vec2 uv = openfl_TextureCoordv.xy;
+    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
         float amount = pow(glitchAmount, 2.0);
         vec2 pixel = 1.0 / openfl_TextureSize.xy;    
         vec4 color = flixel_texture2D(bitmap, uv);
